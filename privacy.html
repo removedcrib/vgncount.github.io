@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy Policy | vgncount.com</title>
+    
+    <!-- SEO Meta Tags (Coerenti con la home) -->
+    <meta name="description" content="Privacy Policy for vgncount.com. Learn how we protect your data when you join the Global Vegan Census." />
+    <link rel="canonical" href="https://vgncount.com/privacy.html" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="profile_logo.png" />
+
     <style>
         :root {
             --bg-color: #0b0f0c; /* Sfondo spaziale coerente con la home */
@@ -19,6 +27,7 @@
             margin: 0;
             padding: 2rem;
             display: flex;
+            flex-direction: column; /* Necessario per il footer flex */
             justify-content: center;
             position: relative;
             min-height: 100vh;
@@ -42,7 +51,8 @@
             max-width: 650px;
             width: 100%;
             line-height: 1.6;
-            padding-bottom: 3rem;
+            margin: 0 auto; /* Centra il container */
+            flex: 1; /* Spinge il footer in basso */
         }
 
         h1 {
@@ -87,6 +97,28 @@
             color: var(--accent-hover);
             text-decoration: underline;
         }
+
+        /* Footer stilizzato coerente con la home */
+        footer {
+            position: relative;
+            z-index: 2;
+            margin-top: 3rem;
+            font-size: 0.8rem;
+            color: #7b9674;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        footer a {
+            color: #7b9674;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+            color: var(--accent-color);
+        }
     </style>
 </head>
 <body>
@@ -114,6 +146,13 @@
 
         <a class="back-link" href="index.html">&larr; Back to VGN Count</a>
     </div>
+
+    <footer>
+        <div style="margin-bottom: 0.5rem;">
+            <a href="https://instagram.com/vgncount" target="_blank">Instagram: @vgncount</a>
+        </div>
+        vgncount.com &copy; 2026 &mdash; <a href="privacy.html">Privacy Policy</a>
+    </footer>
 
     <script>
         // --- SCRIPT PER LO SFONDO STELLARE ---
