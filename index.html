@@ -155,7 +155,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzMotAXTia5IWHgSMKt4ZNH5ecUJn_rW8gWMk1UcxBH3cigwgiGTBxxqNCG5SChYyPE/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwMZS1hSwbXwXvmAqR6ETYWmkTcTphal0j6liRKn3gwr4MZXEz9ZsCjN7WST4XSkpiY/exec';
 
         // Inizializzazione della mappa con stile Dark minimal e fissa
         const map = L.map('map', {
@@ -235,9 +235,12 @@
 
                 const result = await response.json();
 
+                // Gestione trasparente dei vari stati di risposta dal server
                 if (result.result === 'success') {
-                    alert('Thank you! We have sent you a verification email. Please check your inbox and click the link to complete your registration.');
+                    alert('Thank you! We have sent you a verification email. Please check your inbox.');
                     emailInput.value = '';
+                } else if (result.result === 'info') {
+                    alert(result.message); // Gestisce l'avviso per email già confermata
                 } else {
                     alert('Notice: ' + (result.message || 'Something went wrong.'));
                 }
