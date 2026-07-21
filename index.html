@@ -121,17 +121,56 @@
     </footer>
 
     <script>
-        // Simulazione iniziale del contatore (poi lo collegheremo al database Google Sheets)
-        document.getElementById('counter').innerText = "14,892";
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxGwV6Ql1PGhE3jMvgeEh7gXCdFMe9wmP6P70w-CiNFgQyVfpikAgHtWnC5fxV6yzA/exec';
 
-        function registerUser() {
-            const email = document.getElementById('emailInput').value;
+        // Carica il contatore attuale all'avvio della pagina
+        async function fetchCounter() {
+            try {
+                const response = await fetch(SCRIPT_URL);
+                const data = await response.json();
+                document.getElementById('counter').innerText = data.count.toLocaleString();
+            } catch (error) {
+                console.error('Errore nel caricamento del contatore:', error);
+                document.getElementById('counter').innerText = "0";
+            }
+        }
+
+        fetchCounter();
+
+        // Invia l'email al database Google Sheets quando l'utente si registra
+        async function registerUser() {
+            const emailInput = document.getElementById('emailInput');
+            const email = emailInput.value.trim();
+            
             if(!email || !email.includes('@')) {
                 alert('Please enter a valid email address.');
                 return;
             }
-            alert('Thank you! Please check your inbox to confirm your place in the global census.');
-            document.getElementById('emailInput').value = '';
+
+            const button = document.querySelector('button');
+            button.innerText = "Registering...";
+            button.disabled = true;
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+
+                alert('Thank you! You have successfully joined the global census.');
+                emailInput.value = '';
+                fetchCounter(); // Aggiorna subito il contatore
+            } catch (error) {
+                console.error('Errore durante la registrazione:', error);
+                alert('Something went wrong. Please try again.');
+            } finally {
+                button.innerText = "COUNT ME IN";
+                button.disabled = false;
+            }
         }
     </script>
 
