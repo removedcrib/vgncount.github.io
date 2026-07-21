@@ -146,7 +146,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyW_e7jSQwxKzi0k8gWP7CzMvNb6qSe2GhEv6--hs8YwRGI3CaBLT4auDc6cxAUu6kv/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzNEbpXF1oIDRxfJCK12nzbXYLoHVj_A_v2d7PpQJgD92H0yQ2LvQdy1OZsuZNsgto5/exec';
 
         // Inizializzazione della mappa con stile Dark minimal e fissa
         const map = L.map('map', {
@@ -167,10 +167,8 @@
                 const response = await fetch(SCRIPT_URL);
                 const data = await response.json();
                 
-                // Aggiorna il contatore
                 document.getElementById('counter').innerText = data.count.toLocaleString();
                 
-                // Se ci sono posizioni confermate, accende i puntini sulla mappa
                 if (data.locations && data.locations.length > 0) {
                     data.locations.forEach(loc => {
                         L.circleMarker([loc.lat, loc.lng], {
@@ -189,7 +187,7 @@
 
         fetchData();
 
-        // Invia l'email e la posizione stimata al database Google Sheets quando l'utente si registra
+        // Invia l'email e la posizione gestendo la risposta corretta dal server
         async function registerUser() {
             const emailInput = document.getElementById('emailInput');
             const email = emailInput.value.trim();
@@ -204,13 +202,13 @@
             button.disabled = true;
 
             try {
-                // Rileva in modo anonimo la posizione approssimativa tramite IP
+                // Rileva in modo anonimo la posizione tramite IP (con fallback se fallisce)
                 let lat = "";
                 let lng = "";
                 try {
                     const ipRes = await fetch('https://ipapi.co/json/');
                     const ipData = await ipRes.json();
-                    if (ipData && ipData.latitude && ipData.longitude) {
+                    if (ipData && typeof ipData.latitude === 'number' && typeof ipData.longitude === 'number') {
                         lat = ipData.latitude;
                         lng = ipData.longitude;
                     }
@@ -218,21 +216,28 @@
                     console.log('Geolocalizzazione IP saltata');
                 }
 
-                await fetch(SCRIPT_URL, {
+                // Chiamata POST standard senza no-cors (Google Apps Script gestirà il redirect CORS nativamente)
+                const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'text/plain;charset=utf-8', // Trucco standard per evitare il blocco preflight CORS rigido di Google
                     },
                     body: JSON.stringify({ email: email, lat: lat, lng: lng })
                 });
 
-                alert('Thank you! We have sent you a verification email. Please check your inbox and click the link to complete your registration.');
-                emailInput.value = '';
+                const result = await response.json();
+
+                if (result.result === 'success') {
+                    alert('Thank you! We have sent you a verification email. Please check your inbox and click the link to complete your registration.');
+                    emailInput.value = '';
+                } else {
+                    alert('Notice: ' + (result.message || 'Something went wrong.'));
+                }
+
                 fetchData(); 
             } catch (error) {
                 console.error('Errore durante la registrazione:', error);
-                alert('Something went wrong. Please try again.');
+                alert('Connection error. Please try again.');
             } finally {
                 button.innerText = "COUNT ME IN";
                 button.disabled = false;
