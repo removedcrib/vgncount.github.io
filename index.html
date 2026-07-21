@@ -9,10 +9,10 @@
     
     <style>
         :root {
-            --bg-color: #fdfaf6;
-            --text-color: #2c2c2c;
-            --accent-color: #2d5a27;
-            --accent-hover: #3d7a36;
+            --bg-color: #0b0f0c; /* Sfondo spaziale nerastro/verde profondo */
+            --text-color: #e2f0d9;
+            --accent-color: #4CAF50;
+            --accent-hover: #66BB6A;
         }
 
         body {
@@ -27,9 +27,24 @@
             justify-content: center;
             align-items: center;
             text-align: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Canvas per lo Starfield / Campo di particelle in background */
+        #space-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
         }
 
         .container {
+            position: relative;
+            z-index: 2; /* Sopra alle particelle */
             max-width: 650px;
             padding: 2rem;
             width: 100%;
@@ -38,24 +53,52 @@
 
         h1 {
             font-size: 1.2rem;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            color: #666;
+            color: #8fa888;
             margin-bottom: 0.5rem;
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.2);
+        }
+
+        /* Contenitore contatore con effetto Live Pulse (Battito) */
+        .counter-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 1.5rem 0;
+        }
+
+        .counter-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(76,175,80,0.15) 0%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: pulseGlow 4s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.4; }
+            50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.9; }
+            100% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.4; }
         }
 
         .counter {
-            font-size: 5rem;
+            font-size: 5.5rem;
             font-weight: 800;
             color: var(--accent-color);
-            margin: 1rem 0;
             line-height: 1;
             letter-spacing: -2px;
+            text-shadow: 0 0 25px rgba(76, 175, 80, 0.4);
         }
 
         p.subtitle {
             font-size: 1.1rem;
-            color: #555;
+            color: #a3b899;
             margin-bottom: 2rem;
         }
 
@@ -73,17 +116,22 @@
             width: 100%;
             padding: 1rem;
             font-size: 1rem;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            background: #fff;
+            border: 2px solid #233822;
+            border-radius: 10px;
+            background: rgba(15, 24, 18, 0.8);
+            color: #fff;
             outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
             box-sizing: border-box;
         }
 
+        input[type="email"]::placeholder {
+            color: #6c8a66;
+        }
+
         input[type="email"]:focus {
             border-color: var(--accent-color);
-            box-shadow: 0 0 0 4px rgba(45, 90, 39, 0.1);
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
         }
 
         .website-field {
@@ -92,36 +140,38 @@
 
         button {
             width: 100%;
-            background-color: var(--accent-color);
+            background: linear-gradient(135deg, #3d7a36, #2d5a27);
             color: white;
             padding: 1rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(45, 90, 39, 0.4);
         }
 
         button:hover {
-            background-color: var(--accent-hover);
+            background: linear-gradient(135deg, #4da343, #3d7a36);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+            transform: translateY(-1px);
         }
 
         button:active {
             transform: scale(0.98);
         }
 
-        /* Micro nota legale privacy sotto il form */
         .privacy-note {
             font-size: 0.75rem;
-            color: #888;
+            color: #7b9674;
             max-width: 400px;
             margin: 0 auto 2.5rem auto;
             line-height: 1.4;
         }
 
         .privacy-note a {
-            color: #666;
+            color: #a3b899;
             text-decoration: underline;
         }
 
@@ -130,19 +180,18 @@
             max-width: 500px;
             height: 250px;
             margin: 0 auto;
-            border-radius: 12px;
+            border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            border: 2px solid #eee;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid #233822;
         }
 
-        /* Stile Toast Notifications futuristico */
         #toast {
             visibility: hidden;
             min-width: 280px;
             max-width: 400px;
-            background-color: #2c2c2c;
-            color: #fff;
+            background-color: #142215;
+            color: #e2f0d9;
             text-align: center;
             border-radius: 10px;
             padding: 14px;
@@ -154,8 +203,8 @@
             transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
             opacity: 0;
             font-size: 0.95rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(76, 175, 80, 0.3);
         }
 
         #toast.show {
@@ -165,27 +214,37 @@
         }
 
         footer {
+            position: relative;
+            z-index: 2;
             margin-top: 2.5rem;
             font-size: 0.8rem;
-            color: #888;
+            color: #7b9674;
         }
 
         footer a {
-            color: #888;
+            color: #7b9674;
             text-decoration: none;
             margin: 0 5px;
         }
 
         footer a:hover {
             text-decoration: underline;
+            color: var(--accent-color);
         }
     </style>
 </head>
 <body>
 
+    <!-- Canvas per lo sfondo stellare animato -->
+    <canvas id="space-canvas"></canvas>
+
     <div class="container">
         <h1>Global Vegan Census</h1>
-        <div id="counter" class="counter">0</div>
+        
+        <div class="counter-wrapper">
+            <div id="counter" class="counter">0</div>
+        </div>
+
         <p class="subtitle">A living count of vegans worldwide.</p>
 
         <div class="action-box">
@@ -207,13 +266,57 @@
         vgncount.com &copy; 2026 &mdash; <a href="privacy.html">Privacy Policy</a>
     </footer>
 
-    <!-- Toast Notification Element -->
     <div id="toast">Notifica</div>
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <script>
+        // --- SCRIPT PER LO SFONDO STELLARE / PARTICELLARE ---
+        const canvas = document.getElementById('space-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        for (let i = 0; i < 50; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 1.5,
+                speedY: (Math.random() - 0.5) * 0.2,
+                speedX: (Math.random() - 0.5) * 0.2,
+                opacity: Math.random() * 0.5 + 0.1
+            });
+        }
+
+        function drawSpace() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#4CAF50';
+            particles.forEach(p => {
+                ctx.globalAlpha = p.opacity;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                p.y += p.speedY;
+                p.x += p.speedX;
+
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+            });
+            requestAnimationFrame(drawSpace);
+        }
+        drawSpace();
+
+        // --- LOGICA DEL SITO ---
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwMZS1hSwbXwXvmAqR6ETYWmkTcTphal0j6liRKn3gwr4MZXEz9ZsCjN7WST4XSkpiY/exec';
 
         const map = L.map('map', {
@@ -227,7 +330,6 @@
             maxZoom: 19
         }).addTo(map);
 
-        // Funzione Toast futuristica al posto dei vecchi alert
         function showToast(message) {
             const toast = document.getElementById("toast");
             toast.innerText = message;
@@ -235,7 +337,6 @@
             setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 4500);
         }
 
-        // Effetto Slot Machine / Count-Up fluido per il contatore
         function animateCounter(targetValue) {
             const counterElement = document.getElementById('counter');
             if (targetValue === 0) {
@@ -243,13 +344,12 @@
                 return;
             }
             let startValue = 0;
-            let duration = 1200; // Durata dell'animazione in millisecondi
+            let duration = 1200;
             let startTime = null;
 
             function animationStep(currentTime) {
                 if (!startTime) startTime = currentTime;
                 let progress = Math.min((currentTime - startTime) / duration, 1);
-                // Effetto Ease-Out cubico per renderlo morbido alla fine
                 let easeProgress = 1 - Math.pow(1 - progress, 3);
                 let current = Math.floor(easeProgress * targetValue);
                 
@@ -274,7 +374,7 @@
                 if (data.locations && data.locations.length > 0) {
                     data.locations.forEach(loc => {
                         L.circleMarker([loc.lat, loc.lng], {
-                            color: '#3d7a36',
+                            color: '#66BB6A',
                             fillColor: '#4CAF50',
                             fillOpacity: 0.9,
                             radius: 6
