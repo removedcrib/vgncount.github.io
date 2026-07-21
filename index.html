@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Vegan Census | vgncount.com</title>
+    <style>
+        :root {
+            --bg-color: #fdfaf6;
+            --text-color: #2c2c2c;
+            --accent-color: #2d5a27;
+            --accent-hover: #3d7a36;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .counter {
+            font-size: 5rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            margin: 1rem 0;
+            line-height: 1;
+        }
+
+        p.subtitle {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 2rem;
+        }
+
+        .action-box {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        input[type="email"] {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            outline: none;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        input[type="email"]:focus {
+            border-color: var(--accent-color);
+        }
+
+        button {
+            width: 100%;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--accent-hover);
+        }
+
+        footer {
+            margin-top: 3rem;
+            font-size: 0.8rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Global Vegan Census</h1>
+        <div id="counter" class="counter">...</div>
+        <p class="subtitle">A living count of vegans worldwide.</p>
+
+        <div class="action-box">
+            <input type="email" id="emailInput" placeholder="Enter your email to join..." required>
+            <button onclick="registerUser()">COUNT ME IN</button>
+        </div>
+    </div>
+
+    <footer>
+        vgncount.com &copy; 2026 &mdash; United for the future.
+    </footer>
+
+    <script>
+        // Simulazione iniziale del contatore (poi lo collegheremo al database Google Sheets)
+        document.getElementById('counter').innerText = "14,892";
+
+        function registerUser() {
+            const email = document.getElementById('emailInput').value;
+            if(!email || !email.includes('@')) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+            alert('Thank you! Please check your inbox to confirm your place in the global census.');
+            document.getElementById('emailInput').value = '';
+        }
+    </script>
+
+</body>
+</html>
