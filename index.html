@@ -4,8 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global Vegan Census | vgncount.com</title>
+    
+    <!-- Open Graph / Social Sharing Meta Tags -->
+    <meta property="og:title" content="Global Vegan Census | vgncount.com">
+    <meta property="og:description" content="A living count and global map of vegans worldwide. Join the census.">
+    <meta property="og:url" content="https://vgncount.com">
+    <meta property="og:type" content="website">
+
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <!-- Leaflet MarkerCluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
     
     <style>
         :root {
@@ -186,6 +197,17 @@
             border: 2px solid #233822;
         }
 
+        /* Personalizzazione visiva dei cluster sulla mappa scura */
+        .marker-cluster-small, .marker-cluster-medium, .marker-cluster-large {
+            background-color: rgba(76, 175, 80, 0.4) !important;
+        }
+        .marker-cluster-small div, .marker-cluster-medium div, .marker-cluster-large div {
+            background-color: rgba(45, 90, 39, 0.9) !important;
+            color: #e2f0d9 !important;
+            font-weight: bold;
+            font-family: inherit;
+        }
+
         #toast {
             visibility: hidden;
             min-width: 280px;
@@ -270,6 +292,9 @@
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- Leaflet MarkerCluster JS -->
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
     <script>
         // --- SCRIPT PER LO SFONDO STELLARE PULITO ---
@@ -334,6 +359,13 @@
             maxZoom: 19
         }).addTo(map);
 
+        // Inizializzazione del gruppo di cluster per la mappa
+        const markersCluster = L.markerClusterGroup({
+            showCoverageOnHover: false,
+            maxClusterRadius: 40
+        });
+        map.addLayer(markersCluster);
+
         function showToast(message) {
             const toast = document.getElementById("toast");
             toast.innerText = message;
@@ -376,13 +408,15 @@
                 animateCounter(data.count);
                 
                 if (data.locations && data.locations.length > 0) {
+                    markersCluster.clearLayers();
                     data.locations.forEach(loc => {
-                        L.circleMarker([loc.lat, loc.lng], {
+                        const marker = L.circleMarker([loc.lat, loc.lng], {
                             color: '#66BB6A',
                             fillColor: '#4CAF50',
                             fillOpacity: 0.9,
                             radius: 6
-                        }).addTo(map);
+                        });
+                        markersCluster.addLayer(marker);
                     });
                 }
             } catch (error) {
@@ -404,7 +438,7 @@
             }
 
             const button = document.querySelector('button');
-            button.innerText = "Registering...";
+            button.innerText = "TRANSMITTING..."; // Effetto spaziale/live
             button.disabled = true;
 
             try {
