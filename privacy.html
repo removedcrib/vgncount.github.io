@@ -6,10 +6,12 @@
     <title>Privacy Policy | vgncount.com</title>
     <style>
         :root {
-            --bg-color: #fdfaf6;
-            --text-color: #2c2c2c;
-            --accent-color: #2d5a27;
+            --bg-color: #0b0f0c; /* Sfondo spaziale coerente con la home */
+            --text-color: #e2f0d9;
+            --accent-color: #4CAF50;
+            --accent-hover: #66BB6A;
         }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
@@ -18,44 +20,80 @@
             padding: 2rem;
             display: flex;
             justify-content: center;
+            position: relative;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
+
+        /* Canvas per lo Starfield di sfondo */
+        #space-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
         .container {
+            position: relative;
+            z-index: 2; /* Sopra le stelle */
             max-width: 650px;
             width: 100%;
             line-height: 1.6;
+            padding-bottom: 3rem;
         }
+
         h1 {
             font-size: 1.5rem;
             color: var(--accent-color);
             margin-bottom: 0.2rem;
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.2);
         }
+
         .updated {
             font-size: 0.85rem;
-            color: #666;
+            color: #7b9674;
             margin-bottom: 2rem;
         }
+
         h2 {
             font-size: 1.1rem;
             margin-top: 1.8rem;
-            color: #333;
+            color: #a3b899;
+            letter-spacing: 1px;
         }
+
         p, li {
             font-size: 0.95rem;
-            color: #444;
+            color: #c4d9bc;
         }
+
+        strong {
+            color: var(--text-color);
+        }
+
         .back-link {
             display: inline-block;
-            margin-top: 2rem;
+            margin-top: 2.5rem;
             color: var(--accent-color);
             text-decoration: none;
             font-weight: 600;
+            transition: color 0.2s;
         }
+
         .back-link:hover {
+            color: var(--accent-hover);
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
+
+    <!-- Canvas per lo sfondo stellare coerente -->
+    <canvas id="space-canvas"></canvas>
+
     <div class="container">
         <h1>Privacy Policy</h1>
         <div class="updated">Last updated: July 2026</div>
@@ -76,5 +114,55 @@
 
         <a class="back-link" href="index.html">&larr; Back to VGN Count</a>
     </div>
+
+    <script>
+        // --- SCRIPT PER LO SFONDO STELLARE ---
+        const canvas = document.getElementById('space-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Generazione delle stelle
+        for (let i = 0; i < 40; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 1.5,
+                speedY: (Math.random() - 0.5) * 0.2,
+                speedX: (Math.random() - 0.5) * 0.2,
+                opacity: Math.random() * 0.5 + 0.1
+            });
+        }
+
+        function drawSpace() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Disegna e muovi le stelle
+            ctx.fillStyle = '#4CAF50';
+            particles.forEach(p => {
+                ctx.globalAlpha = p.opacity;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                p.y += p.speedY;
+                p.x += p.speedX;
+
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+            });
+
+            requestAnimationFrame(drawSpace);
+        }
+        drawSpace();
+    </script>
 </body>
 </html>
